@@ -10,6 +10,7 @@ import copy
 import json
 import argparse
 import codecs
+import wd
 
 if sys.version_info.major < 3:
     is_py3 = False
@@ -399,6 +400,33 @@ class ICibaTranslator(BaseTranslator):
             explains.append(part["part"] + ", ".join(part["means"]))
         return explains
 
+class DiskTranslator(BaseTranslator):
+    def __init__(self):
+        super(DiskTranslator, self).__init__("disk")
+
+    def translate(self, sl, tl, text, options=None):
+        db = os.path.join('/Users/lu5je0/.dotfiles/submodule/wd', 'stardict.db')
+        sd = wd.StarDict(db, False)
+        obj = sd.query(text)
+
+        res = self.create_translation(sl, tl, text)
+        if obj is None:
+            return res
+
+        res["paraphrase"] = self.get_paraphrase(obj)
+        res["phonetic"] = self.get_phonetic(obj)
+        res["explains"] = self.get_explains(obj)
+        return res
+
+    def get_paraphrase(self, obj):
+        return ""
+
+    def get_phonetic(self, obj):
+        return obj["phonetic"]
+
+    def get_explains(self, obj):
+        return obj['translation'].split('\n')
+
 
 class YoudaoTranslator(BaseTranslator):
     def __init__(self):
@@ -576,6 +604,7 @@ ENGINES = {
     "sdcv": SdcvShell,
     "trans": TranslateShell,
     "youdao": YoudaoTranslator,
+    "disk": DiskTranslator,
 }
 
 
@@ -673,5 +702,9 @@ if __name__ == "__main__":
         r = t.translate("auto", "zh", "naive")
         print(r)
 
-    # test3()
+    def test8():
+        t = DiskTranslator()
+        r = t.translate("auto", "zh", "good")
+        print(r)
+
     main()
