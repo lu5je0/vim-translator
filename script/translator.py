@@ -422,7 +422,11 @@ class DiskTranslator(BaseTranslator):
         return ""
 
     def get_phonetic(self, obj):
-        return obj["phonetic"]
+        phonetic = obj["phonetic"]
+        if phonetic is None:
+            return ""
+        else:
+            return phonetic
 
     def get_explains(self, obj):
         return obj['translation'].split('\n')
@@ -704,7 +708,10 @@ if __name__ == "__main__":
 
     def test8():
         t = DiskTranslator()
-        r = t.translate("auto", "zh", "good")
+        r = t.translate("auto", "zh", "win32")
         print(r)
 
-    main()
+        s = t.translate("auto", "zh", "good")
+        print(s)
+
+    test8()
