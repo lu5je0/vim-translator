@@ -403,11 +403,11 @@ class ICibaTranslator(BaseTranslator):
 class DiskTranslator(BaseTranslator):
     def __init__(self):
         super(DiskTranslator, self).__init__("disk")
+        self.db = os.path.join(os.path.expanduser('~'), '.misc', 'stardict.db')
+        self.sd = wd.StarDict(self.db, False)
 
     def translate(self, sl, tl, text, options=None):
-        db = os.path.join(os.path.expanduser('~'), '.misc', 'stardict.db')
-        sd = wd.StarDict(db, False)
-        obj = sd.query(text)
+        obj = self.sd.query(text)
 
         res = self.create_translation(sl, tl, text)
         if obj is None:
