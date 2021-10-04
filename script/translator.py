@@ -714,4 +714,4 @@ if __name__ == "__main__":
         s = t.translate("auto", "zh", "good")
         print(s)
 
-    test8()
+    main()
