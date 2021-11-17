@@ -405,7 +405,7 @@ class DiskTranslator(BaseTranslator):
         super(DiskTranslator, self).__init__("disk")
 
     def translate(self, sl, tl, text, options=None):
-        db = os.path.join(os.path.expanduser('~'), '.misc', 'stardict.db')
+        db = os.path.join(os.path.expanduser('~'), '.local/share/stardict', 'stardict.db')
         sd = wd.StarDict(db, False)
         obj = sd.query(text)
 
