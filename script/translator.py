@@ -249,7 +249,7 @@ class GoogleTranslator(BaseTranslator):
     def __init__(self):
         super(GoogleTranslator, self).__init__("google")
         self._host = "translate.googleapis.com"
-        self._cnhost = "translate.google.cn"
+        self._cnhost = "translate.googleapis.com"
 
     def get_url(self, sl, tl, qry):
         http_host = self._cnhost if "zh" in tl else self._host
@@ -612,6 +612,16 @@ ENGINES = {
 }
 
 
+def sanitize_input_text(text):
+    while True:
+        try:
+            text.encode()
+            break
+        except UnicodeEncodeError:
+            text = text[:-1]
+    return text
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--engines", nargs="+", required=False, default=["google"])
@@ -621,6 +631,8 @@ def main():
     parser.add_argument("--options", type=str, default=None, required=False)
     parser.add_argument("text", nargs="+", type=str)
     args = parser.parse_args()
+
+    args.text = [ sanitize_input_text(x) for x in args.text ]
 
     text = " ".join(args.text).strip("'").strip('"').strip()
     text = re.sub(r"([a-z])([A-Z][a-z])", r"\1 \2", text)
